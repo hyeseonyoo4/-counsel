@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nuriapp.login.mapper.MemberMapper">
+
+    <select id="findByIdandPassword" resultType="com.nuriapp.login.domain.Member">
+        SELECT * FROM member WHERE id = #{id} and password = #{password}
+    </select>
+
+    <select id="findMembersByNameAndTel" resultType="com.nuriapp.login.domain.Member">
+        SELECT m.id, m.registerDate, m.tel, m.userName FROM member m WHERE m.userName = #{userName} and m.tel = #{tel}
+    </select>
+    <select id="findMembersByIdAndTel" resultType="com.nuriapp.login.domain.Member">
+        SELECT m.id, m.registerDate, m.tel, m.userName FROM member m WHERE m.id = #{id} and m.tel = #{tel}
+    </select>
+
+    <update id="changePassword" parameterType="com.nuriapp.login.domain.Member">
+        UPDATE member SET password = #{password} WHERE id = #{id}
+    </update>
+</mapper>

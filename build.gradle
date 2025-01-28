@@ -1,0 +1,67 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.1'
+    id 'io.spring.dependency-management' version '1.1.4'
+    // Node.js와 npm을 사용하기 위한 플러그인
+    id 'com.github.node-gradle.node' version '3.0.1'
+}
+
+group = 'com.nuriapp'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.apache.commons:commons-csv:1.10.0'
+     
+
+    // modelmapper
+    implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.1.1'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// Vue.js 프로젝트 빌드 설정
+node {
+    version = '20.10.0'
+    npmVersion = '10.2.3'
+    workDir = file('./src/frontend') // Vue 프로젝트 디렉토리 설정
+    npmWorkDir = file('./src/frontend')
+    nodeModulesDir = file('./src/frontend')
+}
+
+task setUp(type: NpmTask){
+    description = "Install Node.js packages"
+    args = ['install']
+    inputs.files file('package.json')
+    outputs.files file('node_modules')
+}
+
+task buildFrontend(type: NpmTask, dependsOn: setUp) {
+    description "Build vue.js"
+    args = ['run', 'build']
+}
+
+processResources.dependsOn 'buildFrontend'
